@@ -1,3 +1,22 @@
+#[derive(Debug)]
+struct Site {
+    domain: String,
+    name: String,
+    nation: String,
+    found: u32,
+}
+
+impl Site {
+    //结构体方法,第一个参数是&self
+    fn speak(&self) -> String {
+        self.name.clone()
+    }
+    //结构体关联函数,方法定义在结构体内,但是参数没有引用对象
+    fn create(domain: String,name:String,nation:String,found:u32) -> Site {
+        Site { domain,name,nation,found }
+    }
+}
+
 fn main() {
     //let a = 12;
     //println!("a is {0},a again is {0} " ,a )
@@ -90,12 +109,29 @@ fn main() {
     // let dangle_reference = dangle();
     // println!("str={}",dangle_reference)
     //字符串切片
-    let str = "broadcast";
-    //表示从0到第5个元素,但不包括第5个元素
-    let str1 = &str[0..5];
-    let str2 = &str[5..9];
-    println!("str1={0},str2={1}",str1,str2);
+    // let str = "broadcast";
+    // //表示从0到第5个元素,但不包括第5个元素
+    // let str1 = &str[0..5];
+    // let str2 = &str[5..9];
+    // println!("str1={0},str2={1}",str1,str2);
+    let runob = Site {
+        domain: String::from("www.baidu.com"),
+        name: String::from("runob"),
+        nation: String::from("china"),
+        found: 2013,
+    };
+    let site0 = Site {
+        domain: String::from("www.runob.com"),
+        //表示除了domain外,其他字段都引用runob对象的值
+        ..runob
+    };
+    //println!("site0 domain={0},name={1},nation={2},found={3}", site0.domain, site0.name, site0.nation, site0.found);
+    //或者使用rust自带的输出语句
+    // println!("site = {:?}", site0);
+    // println!("speak : {}", site0.speak())
+    println!("create site : {:?}", Site::create(String::from("www.raoshanshan.com"),String::from("raoshanshan"),String::from("china"),32));
 }
+
 
 fn dangle() -> String {
     let str = String::from("haha");
