@@ -1,4 +1,8 @@
-#[derive(Debug)]
+use std::fs::File;
+use std::io;
+use std::io::Read;
+use crate::Book::Papery;
+
 struct Site {
     domain: String,
     name: String,
@@ -12,9 +16,19 @@ impl Site {
         self.name.clone()
     }
     //结构体关联函数,方法定义在结构体内,但是参数没有引用对象
-    fn create(domain: String,name:String,nation:String,found:u32) -> Site {
-        Site { domain,name,nation,found }
+    fn create(domain: String, name: String, nation: String, found: u32) -> Site {
+        Site { domain, name, nation, found }
     }
+}
+
+#[derive(Debug)]
+//枚举类
+enum Book {
+    Papery,
+    Electronic,
+    //也可以给枚举对象
+    url_book { url: String },
+    index_book { index: u32 },
 }
 
 fn main() {
@@ -64,7 +78,7 @@ fn main() {
     //     number+=1;
     // }
 
-    let a = [10, 20, 30, 40, 50];
+    //let a = [10, 20, 30, 40, 50];
     //for 循环
     // for b in a.iter() {
     //     println!("b={}", b)
@@ -114,24 +128,134 @@ fn main() {
     // let str1 = &str[0..5];
     // let str2 = &str[5..9];
     // println!("str1={0},str2={1}",str1,str2);
-    let runob = Site {
-        domain: String::from("www.baidu.com"),
-        name: String::from("runob"),
-        nation: String::from("china"),
-        found: 2013,
-    };
-    let site0 = Site {
-        domain: String::from("www.runob.com"),
-        //表示除了domain外,其他字段都引用runob对象的值
-        ..runob
-    };
+    // let runob = Site {
+    //     domain: String::from("www.baidu.com"),
+    //     name: String::from("runob"),
+    //     nation: String::from("china"),
+    //     found: 2013,
+    // };
+    // let site0 = Site {
+    //     domain: String::from("www.runob.com"),
+    //     //表示除了domain外,其他字段都引用runob对象的值
+    //     ..runob
+    // };
     //println!("site0 domain={0},name={1},nation={2},found={3}", site0.domain, site0.name, site0.nation, site0.found);
     //或者使用rust自带的输出语句
     // println!("site = {:?}", site0);
     // println!("speak : {}", site0.speak())
-    println!("create site : {:?}", Site::create(String::from("www.raoshanshan.com"),String::from("raoshanshan"),String::from("china"),32));
+    //println!("create site : {:?}", Site::create(String::from("www.raoshanshan.com"),String::from("raoshanshan"),String::from("china"),32));
+    // let book = Book::Papery;
+    // println!("{:?}", book);
+    // let index_book = Book::index_book { index: 32 };
+    // let url_book = Book::url_book {url:String::from("www.lisisi.com")};
+    // // println!("{:?}", index_book);
+    // // println!("{:?}", url_book);
+    // match url_book {
+    //     Book::index_book { index } => {
+    //         println!("index:{}", index)
+    //     }
+    //     Book::url_book { url } => {
+    //         println!("url:{}", url)
+    //     }
+    //     _ => {
+    //         println!("book:{:?}", index_book)
+    //     }
+    // }
+    // let some = Some("hello");
+    // match some {
+    //     Some(something) =>{
+    //         println!("something:{}",something);
+    //     }
+    //     None =>{
+    //         println!("nothing");
+    //     }
+    // }
+    // let i = 0;
+    // match i {
+    //     0 => println!("zero"),
+    //     _ => {}
+    // }
+    // //等价于
+    // if let 0 = i{
+    //     println!("zero1")
+    // }
+    //panic表示不可恢复的错误
+    //panic!("error occured");
+    //可恢复的异常
+    //let f = File::open("hello.txt");
+    // match f {
+    //     Ok(file)=>{
+    //         println!("file name");
+    //     }
+    //     Err(err)=>{
+    //         println!("err:{:?}",err);
+    //     }
+    // }
+    //let f1 = File::open("hello.txt").unwrap();
+    // fn f(i: i32) -> Result<i32, bool> {
+    //     if i >= 0 {
+    //         Ok(i)
+    //     } else {
+    //         Err(false)
+    //     }
+    // }
+    // let res = f(-32);
+    // match res {
+    //     Ok(v) => println!("i={}", v),
+    //     Err(erro) => println!("res is {}", erro)
+    // }
+    // fn open_file(path: &str) -> Result<String, io::Error> {
+    //     let mut f = File::open(path)?;
+    //     let mut s = String::new();
+    //     f.read_to_string(&mut s)?;
+    //     Ok(s)
+    // }
+    //
+    // let file = open_file("hello.txt");
+    // match file {
+    //     Ok(str0) => println!("str={}", str0),
+    //     Err(erro) => {
+    //         match erro.kind() {
+    //             io::ErrorKind::NotFound => {
+    //                 println!("not found file")
+    //             }
+    //             _ => println!("can't open file")
+    //         }
+    //     }
+    // }
+    // let r ;
+    // {
+    //     let x = 5;
+    //     r = &x;
+    // }
+    // println!("r:{}",r);
+    let str;
+    {
+        let str1 = "hello";
+        let str2 = "lisisi";
+        str = longer(str1,str2);
+        println!("longer is {}",str);
+    }
 }
 
+//这段代码可能返回一个过期的引用
+// fn longer(str1:&str,str2:&str)->&str{
+//     if str2.len()>str1.len() {
+//         str2
+//     }else {
+//         str1
+//     }
+// }
+
+//用一个'加一个小写字母单词表示两个引用的生命周期一致
+// 只要使用函数的地方和str1 str2的声明周期保持一致,那么还是可以继续使用的
+fn longer<'a>(str1:&'a str,str2:&'a str)->&'a str{
+    if str2.len()>str1.len() {
+        str2
+    }else {
+        str1
+    }
+}
 
 fn dangle() -> String {
     let str = String::from("haha");
