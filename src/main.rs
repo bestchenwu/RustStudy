@@ -1,7 +1,13 @@
+mod second;
+
+use std::fmt::format;
 use std::fs::File;
-use std::io;
+use std::{fs, io, thread};
+use std::collections::HashMap;
 use std::io::Read;
+use std::time::Duration;
 use crate::Book::Papery;
+use crate::second::ClassName;
 
 struct Site {
     domain: String,
@@ -31,7 +37,47 @@ enum Book {
     index_book { index: u32 },
 }
 
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T> {
+    fn get_x(&self) -> &T {
+        &self.x
+    }
+}
+
+trait Descriptive {
+    fn describe(&self) -> String {
+        String::from("from trait Descriptive")
+    }
+}
+
+struct Person {
+    age: u32,
+    name: String,
+}
+
+impl Descriptive for Person {
+    // fn describe(&self) -> String {
+    //     format!("age:{0},name:{1}", self.age, self.name)
+    // }
+}
+
+fn output<T: Descriptive>(t: T) -> String {
+    t.describe()
+}
+
 fn main() {
+    // let args = std::env::args();
+    // println!("{:?}",args)
+    // use std::io::stdin;
+    // // let mut str = String::new();
+    // // stdin().read_to_string(&mut str).expect("failed to read line");
+    // // println!("your input:\n{}",str);
+    // let str = fs::read_to_string("D:\\newJob.txt").unwrap();
+    // println!("str={}",str);
     //let a = 12;
     //println!("a is {0},a again is {0} " ,a )
     //println!("Hello, world!");
@@ -229,13 +275,56 @@ fn main() {
     //     r = &x;
     // }
     // println!("r:{}",r);
-    let str;
-    {
-        let str1 = "hello";
-        let str2 = "lisisi";
-        str = longer(str1,str2);
-        println!("longer is {}",str);
-    }
+    // let str;
+    // {
+    //     let str1 = "hello";
+    //     let str2 = "lisisi";
+    //     str = longer(str1,str2);
+    //     println!("longer is {}",str);
+    // }
+    // let array  = [1,2,3,4,8,5,6];
+    // let maxN = max(&array);
+    // println!("maxN:{}",maxN)
+    // let pa = Point { x: 1, y: 2 };
+    // let pb = Point { x: 3, y: 4 };
+    // println!("pa x = {0},y={1}", pa.get_x(), pa.y);
+    // println!("pb x = {0},y={1}", pb.get_x(), pb.y);
+    // let cali = Person { age: 32, name: String::from("raoshanshan") };
+    // println!("cali:{}", output(cali))
+    // let mut vector = vec![1,2,3,4];
+    // // vector.push(5);
+    // // vector.push(6);
+    // // println!("vector:{:?}",vector)
+    // println!("value:{}",match vector.get(9){
+    //     Some(value)=>value.to_string(),
+    //     None=>String::from("nothing")
+    // })
+    // let mut map = HashMap::new();
+    // map.insert("haha",3);
+    // map.insert("raoshanshan",5);
+    // //println!("{:?}",map.get("lisisi").unwrap());
+    // for p in map.iter(){
+    //     println!("{:?}",p)
+    // }
+    // let newClass = ClassName::new(String::from("raoshanshan"));
+    // println!("res:{}",newClass.public_method());
+    // fn spaw_function(){
+    //     for i in 0..5 {
+    //         println!("spaw thread:{}",i);
+    //         thread::sleep(Duration::from_millis(1));
+    //     }
+    // }
+    //
+    // thread::spawn(spaw_function);
+    // for i in 0..3{
+    //     println!("main thread:{}",i);
+    //     thread::sleep(Duration::from_millis(1));
+    // }
+    //闭包 | 之间是要传递的参数 |
+    let inc = | num:i32|->i32{
+        num+1
+    };
+    println!("inc is {}",inc(5));
 }
 
 //这段代码可能返回一个过期的引用
@@ -249,10 +338,10 @@ fn main() {
 
 //用一个'加一个小写字母单词表示两个引用的生命周期一致
 // 只要使用函数的地方和str1 str2的声明周期保持一致,那么还是可以继续使用的
-fn longer<'a>(str1:&'a str,str2:&'a str)->&'a str{
-    if str2.len()>str1.len() {
+fn longer<'a>(str1: &'a str, str2: &'a str) -> &'a str {
+    if str2.len() > str1.len() {
         str2
-    }else {
+    } else {
         str1
     }
 }
@@ -262,6 +351,35 @@ fn dangle() -> String {
     //str随着函数的结束,已经被释放了,所以它的引用也就是不被允许返回
     //&str
     str
+}
+
+//找出数组里面最大的值
+trait Compare {
+    fn compare(&self, object: &Self) -> i8;
+}
+
+impl Compare for u32 {
+    fn compare(&self, object: &u32) -> i8 {
+        if &self > &object {
+            { 1 }
+        } else if &self == &object {
+            { 0 }
+        } else {
+            { -1 }
+        }
+    }
+}
+
+fn max<T:Compare>(array: &[T]) -> &T {
+    let mut i = 1;
+    let mut max_index = 0;
+    while i < array.len() {
+        if array[i].compare(&array[max_index]) == 1 {
+            max_index = i;
+        }
+        i += 1;
+    }
+    &array[max_index]
 }
 
 fn another_function(x: i64, y: i64) {
