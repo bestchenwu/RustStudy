@@ -321,10 +321,46 @@ fn main() {
     //     thread::sleep(Duration::from_millis(1));
     // }
     //闭包 | 之间是要传递的参数 |
-    let inc = | num:i32|->i32{
-        num+1
-    };
-    println!("inc is {}",inc(5));
+    // let inc = | num:i32|->i32{
+    //     num+1
+    // };
+    // println!("inc is {}",inc(5));
+    // let i = 116i8;
+    // let j = 0o106;
+    // //println!("j={}",j);
+    // let k = 2u16.pow(4);
+    // println!("k={}",k);
+    // let u = 0b101101u8.count_ones();
+    // println!("u={}",u)
+    // let i = 5f32.sqrt()*5f32.sqrt();
+    // println!("i={}",i)
+    // let i = false as i32;
+    // assert_eq!(i,0)
+    // let lazy:[i64;7] = [1,2,3,4,5,6,7];
+    // assert_eq!(lazy[3],4)
+    // let mut v = vec![1,2,3,4];
+    // v.push(5);
+    // v.push(6);
+    // assert_eq!(v.iter().fold(1,|a,b|a*b),720);
+    // let v1:Vec<i32> = (0..5).collect();
+    // assert_eq!(v1,vec![0,1,2,3,4])
+    let a = vec![0.0,0.707,-1.0,-0.707];
+    let v = vec![0.0,0.707,1.0,0.707];
+    let sa = &a;
+    let sv = &v;
+
+    fn print(n:&[f64]){
+        for n1 in n {
+            println!("{}",n1)
+        }
+    }
+    print(sa);
+    print(sv);
+}
+
+#[test]
+fn test_longer(){
+    assert_eq!(longer("abc","cd"),"abc");
 }
 
 //这段代码可能返回一个过期的引用
